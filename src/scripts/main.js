@@ -48,37 +48,38 @@ class AudioVisualizer {
     this.numberOfBars = numberOfBars;
     this.bars = new Array();
 
-    //generate a ThreeJS Scene
+    // Generate a ThreeJS Scene
     this.scene = new THREE.Scene();
 
-    //get the width and height
+    // Get the width and height
     const { width, height } = Window.dimensions;
 
-    //get the renderer
+    // Get the renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(width, height);
 
-    //append the rederer to the body
+    // Append the rederer to the body
     document.body.appendChild(this.renderer.domElement);
 
-    //create and add camera
+    // Create and add camera
     this.camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 20000);
     this.camera.position.set(0, 45, 0);
     this.scene.add(this.camera);
 
-    //update renderer size, aspect ratio and projection matrix on resize
+    // Update renderer size, aspect ratio and projection matrix on resize
     Window.onResize(this.updateSize.bind(this));
 
-    //background color of the scene
+    // Background color of the scene
     this.renderer.setClearColor(0x333f47, 1);
 
-    //create a light and add it to the scene
+    // Create a light and add it to the scene
     var light = new THREE.PointLight(0xffffff);
     light.position.set(-100, 200, 100);
     this.scene.add(light);
 
-    //Add interation capability to the scene
+    // Add interation capability to the scene
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+
     this.createBars();
     this.handleDrop();
     this.setupAudioProcessing();
@@ -95,23 +96,24 @@ class AudioVisualizer {
 
   createBars() {
     //iterate and create bars
-    for (var i = 0; i < this.numberOfBars; i++) {
+    console.log('hello');
+    this.bars = [];
+
+    for (let index = 0; index < this.numberOfBars; index++) {
       //create a bar
-      var barGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+      const barGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
 
       //create a material
-      var material = new THREE.MeshPhongMaterial({
-        color: this.getRandomColor(),
-        ambient: 0x808080,
-        specular: 0xffffff
-      });
+      const material = new THREE.MeshPhongMaterial({ color: this.getRandomColor(), ambient: 0x808080, specular: 0xffffff });
 
       //create the geometry and set the initial position
-      this.bars[i] = new THREE.Mesh(barGeometry, material);
-      this.bars[i].position.set(i - this.numberOfBars / 2, 0, 0);
+      const bar = new THREE.Mesh(barGeometry, material);
+      bar.position.set(index - this.numberOfBars / 2, 0, 0);
 
       //add the created bar to the scene
-      this.scene.add(this.bars[i]);
+      this.scene.add(bar);
+
+      this.bars.push(bar);
     }
   }
 
