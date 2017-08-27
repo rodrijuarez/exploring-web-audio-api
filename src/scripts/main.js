@@ -16,6 +16,14 @@ class Window {
   static get dimensions() {
     return { width: Window.width, height: Window.height };
   }
+
+  static onResize(callback) {
+    window.addEventListener('resize', callback);
+  }
+
+  static onDragOver(callback) {
+    window.addEventListener('dragover', callback);
+  }
 }
 
 class AudioVisualizer {
@@ -59,14 +67,7 @@ class AudioVisualizer {
     this.scene.add(this.camera);
 
     //update renderer size, aspect ratio and projection matrix on resize
-    window.addEventListener('resize', () => {
-      const { height, width } = Window.dimensions;
-
-      this.renderer.setSize(width, height);
-
-      this.camera.aspect = width / height;
-      this.camera.updateProjectionMatrix();
-    });
+    Window.onResize(this.updateSize.bind(this));
 
     //background color of the scene
     this.renderer.setClearColor(0x333f47, 1);
@@ -81,6 +82,15 @@ class AudioVisualizer {
     this.createBars();
     this.handleDrop();
     this.setupAudioProcessing();
+  }
+
+  updateSize() {
+    const { height, width } = Window.dimensions;
+
+    this.renderer.setSize(width, height);
+
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
   }
 
   createBars() {
@@ -213,12 +223,4 @@ class AudioVisualizer {
 
 const visualizer = new AudioVisualizer();
 
-window.addEventListener(
-  'dragover',
-  function(e) {
-    console.log('dragover');
-    e = e || event;
-    e.preventDefault();
-  },
-  false
-);
+Window.onDragOver(event => event.preventDefault());
