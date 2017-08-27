@@ -4,6 +4,20 @@ const $ = require('jquery'),
   THREE = require('three'),
   OrbitControls = require('three-orbit-controls')(THREE);
 
+class Window {
+  static get width() {
+    return window.innerWidth;
+  }
+
+  static get height() {
+    return window.innerHeight;
+  }
+
+  static get dimensions() {
+    return { width: Window.width, height: Window.height };
+  }
+}
+
 class AudioVisualizer {
   //constants
   numberOfBars;
@@ -25,36 +39,33 @@ class AudioVisualizer {
   constructor(numberOfBars = 60) {
     this.numberOfBars = numberOfBars;
     this.bars = new Array();
+
     //generate a ThreeJS Scene
     this.scene = new THREE.Scene();
 
     //get the width and height
-    var WIDTH = window.innerWidth,
-      HEIGHT = window.innerHeight;
+    const { width, height } = Window.dimensions;
 
     //get the renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
-    this.renderer.setSize(WIDTH, HEIGHT);
+    this.renderer.setSize(width, height);
 
     //append the rederer to the body
     document.body.appendChild(this.renderer.domElement);
 
     //create and add camera
-    this.camera = new THREE.PerspectiveCamera(40, WIDTH / HEIGHT, 0.1, 20000);
+    this.camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 20000);
     this.camera.position.set(0, 45, 0);
     this.scene.add(this.camera);
 
-    var that = this;
-
     //update renderer size, aspect ratio and projection matrix on resize
-    window.addEventListener('resize', function() {
-      var WIDTH = window.innerWidth,
-        HEIGHT = window.innerHeight;
+    window.addEventListener('resize', () => {
+      const { height, width } = Window.dimensions;
 
-      that.renderer.setSize(WIDTH, HEIGHT);
+      this.renderer.setSize(width, height);
 
-      that.camera.aspect = WIDTH / HEIGHT;
-      that.camera.updateProjectionMatrix();
+      this.camera.aspect = width / height;
+      this.camera.updateProjectionMatrix();
     });
 
     //background color of the scene
@@ -200,7 +211,7 @@ class AudioVisualizer {
   }
 }
 
-var visualizer = new AudioVisualizer();
+const visualizer = new AudioVisualizer();
 
 window.addEventListener(
   'dragover',
