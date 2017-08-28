@@ -74,7 +74,7 @@ class AudioVisualizer {
 
     // Create a light and add it to the scene
     var light = new THREE.PointLight(0xffffff);
-    light.position.set(-100, 200, 100);
+    light.position.set(-100, 100, 100);
     this.scene.add(light);
 
     // Add interation capability to the scene
